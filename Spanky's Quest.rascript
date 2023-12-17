@@ -32,6 +32,9 @@ function CurrentSpankyLetters() => byte(0x00C0BA)
 // Example: 0x12345600 is a score of 1234560.
 function Score() => dword(0x00C0D4)
 
+// $C28E: [8-bit] Boss Health
+function BossHealth() => byte(0x00C28E)
+
 // $FFD5: [8-bit] Current Player Lives
 function Lives() => byte(0x00FFD5)
 
@@ -40,6 +43,25 @@ function Lives() => byte(0x00FFD5)
 // -----------------------
 
 function GetCurrentScore() => bcd(Score()) / 10
+
+
+// ----------------------
+// ---- Achievements ----
+// ----------------------
+
+achievement(
+    title = "SPANKY", points = 5,
+    description = "Collect the letters needed to spell SPANKY and enter the bonus stage",
+    id = 379666, badge = "00000", published = "12/12/2023 12:03:14 AM", modified = "12/12/2023 12:03:14 AM",
+    trigger = prev(CurrentFloorNumber()) == 69 && prev(EnterBonusStageFlag()) == 1 && EnterBonusStageFlag() == 0
+)
+
+achievement(
+    title = "Pineapple Destroyer", points = 10,
+    description = "Defeat the boss of Tower 1 without losing a life during the fight",
+    id = 380916, badge = "00000", published = "12/17/2023 1:43:07 AM", modified = "12/17/2023 1:43:07 AM",
+    trigger = CurrentFloorNumber() == 0x0F && never(prev(Lives()) > Lives()) && once(prev(BossHealth()) == 0x00 && BossHealth() == 0x10) && trigger_when(BossHealth() == 0x00)
+)
 
 // ---------------------
 // --- Rich Presence ---
