@@ -445,7 +445,7 @@ achievement(
 
 achievement(
     title = "Super 1-UP Bonus", points = 10,
-    description = "Collect the letters needed to spell SPANKY in order and recieve the Super 1-UP Bonus (no cheats)",
+    description = "Collect the letters needed to spell SPANKY (or MONKEY) in order and recieve the Super 1-UP Bonus (no cheats)",
     id = 384905, badge = "433769",
     trigger = InGame() && ResetIfUsingInvincibilityCheat() && never(CurrentSpankyLetters() == 0x00) &&
               CollectedSpankyLettersInOrder(0x00, SPANKY_LETTERS_S) &&
@@ -534,9 +534,9 @@ achievement(
 
 leaderboard(
     id = 85012,
-    title = "Top Score",
+    title = "Top Score (no cheats)",
     description = "Highest score achieved in a game before losing all lives or clearing the final tower",
-    start = prev(ScreenID()) != SCREEN_ID_GAME_OVER && ScreenID() == SCREEN_ID_GAME_OVER,
+    start = NotUsingInvincibilityCheat() && prev(ScreenID()) != SCREEN_ID_GAME_OVER && ScreenID() == SCREEN_ID_GAME_OVER,
     cancel = ScreenID() == SCREEN_ID_MAIN_MENU,
     submit = prev(ScreenID()) != SCREEN_ID_GAME_OVER && ScreenID() == SCREEN_ID_GAME_OVER,
     value = GetCurrentScore(),
@@ -548,6 +548,78 @@ leaderboard(
 // ---------------------
 // --- Rich Presence ---
 // ---------------------
+
+FloorLookup = {
+    0: "1-01",
+    1: "1-02",
+    2: "1-03",
+    3: "1-04",
+    4: "1-05",
+    5: "1-06",
+    6: "1-07",
+    7: "1-08",
+    8: "1-09",
+    9: "1-10",
+    10: "1-11",
+    11: "1-12",
+    12: "1-13",
+    13: "1-14",
+    14: "1-15",
+    15: "1-16 🍍",
+    16: "2-01",
+    17: "2-02",
+    18: "2-03",
+    19: "2-04",
+    20: "2-05",
+    21: "2-06",
+    22: "2-07",
+    23: "2-08",
+    24: "2-09",
+    25: "2-10",
+    26: "2-11",
+    27: "2-12",
+    28: "2-13",
+    29: "2-14",
+    30: "2-15",
+    31: "2-16 🍑",
+    32: "3-01",
+    33: "3-02",
+    34: "3-03",
+    35: "3-04",
+    36: "3-05",
+    37: "3-06",
+    38: "3-07",
+    39: "3-08",
+    40: "3-09",
+    41: "3-10",
+    42: "3-11",
+    43: "3-12",
+    44: "3-13",
+    45: "3-14",
+    46: "3-15",
+    47: "3-16 🍉",
+    48: "4-01",
+    49: "4-02",
+    50: "4-03",
+    51: "4-04",
+    52: "4-05",
+    53: "4-06",
+    54: "4-07",
+    55: "4-08",
+    56: "4-09",
+    57: "4-10",
+    58: "4-11",
+    59: "4-12",
+    60: "4-13",
+    61: "4-14",
+    62: "4-15",
+    63: "4-16 🍇",
+    64: "5-01 🍍",
+    65: "5-02 🍑",
+    66: "5-03 🍉",
+    67: "5-04 🍇",
+    68: "5-05 🐦✨"
+}
 
 SPANKYLookup = {
     4: " –––––🅨",
@@ -615,8 +687,20 @@ SPANKYLookup = {
     252: " 🅢🅟🅐🅝🅚🅨",
 }
 
+rich_presence_conditional_display(!InGame(), "In Menus • {0}0 {1} 🐵{2}",
+    rich_presence_value("Score", GetCurrentScore() / 10, format="SCORE"),
+    rich_presence_lookup("SPANKY", CurrentSpankyLetters(), SPANKYLookup, fallback=" ––––––"),
+    rich_presence_value("Number", Lives())
+)
+
+rich_presence_conditional_display(prior(CurrentFloorNumber()) == 0x45, "Bonus Stage • {0}0 {1} 🐵{2}",
+    rich_presence_value("Score", GetCurrentScore() / 10, format="SCORE"),
+    rich_presence_lookup("SPANKY", CurrentSpankyLetters(), SPANKYLookup, fallback=" ––––––"),
+    rich_presence_value("Number", Lives())
+)
+
 rich_presence_display("🏰{0} • {1}0 {2} 🐵{3}",
-    rich_presence_value("Number", CurrentFloorNumber() + 1),
+    rich_presence_lookup("Floor", CurrentFloorNumber(), FloorLookup, fallback="?-??"),
     rich_presence_value("Score", GetCurrentScore() / 10, format="SCORE"),
     rich_presence_lookup("SPANKY", CurrentSpankyLetters(), SPANKYLookup, fallback=" ––––––"),
     rich_presence_value("Number", Lives())
