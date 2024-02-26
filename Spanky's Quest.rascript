@@ -353,7 +353,7 @@ achievement(
 )
 
 achievement(
-    title = "Sluggo The Pineapple Pulverized", points = 5,
+    title = "Sluggo the Pineapple Pulverized", points = 5,
     description = "Defeat Sluggo The Pineapple in Tower 1 without losing a life during the fight (no cheats)",
     id = 380916, badge = "431746", published = "12/17/2023 1:43:07 AM", modified = "12/17/2023 1:43:07 AM",
     trigger = BeatFloorBossWithoutLosingALife(0x0F, PINEAPPLE_HEALTH)
@@ -367,7 +367,7 @@ achievement(
 )
 
 achievement(
-    title = "Pippi The Peach Pinched", points = 5,
+    title = "Pippi the Peach Pinched", points = 5,
     description = "Defeat Pippi The Peach in Tower 2 without losing a life during the fight (no cheats)",
     id = 383156, badge = "431747", published = "12/24/2023 6:53:58 PM", modified = "12/24/2023 6:53:58 PM",
     trigger = BeatFloorBossWithoutLosingALife(0x1F, PEACH_HEALTH)
@@ -381,7 +381,7 @@ achievement(
 )
 
 achievement(
-    title = "Fatso The Watermelon Wiped Out", points = 5,
+    title = "Fatso the Watermelon Wiped Out", points = 5,
     description = "Defeat Fatso The Watermelon in Tower 3 without losing a life during the fight (no cheats)",
     id = 383157, badge = "431748", published = "12/24/2023 7:17:05 PM", modified = "12/24/2023 7:17:05 PM",
     trigger = BeatFloorBossWithoutLosingALife(0x2F, WATERMELON_HEALTH)
@@ -395,7 +395,7 @@ achievement(
 )
 
 achievement(
-    title = "Vito Mascutone The Grapes Got Grinded", points = 5,
+    title = "Vito Mascutone the Grapes Got Grinded", points = 5,
     description = "Defeat Vito Mascutone in Tower 4 without losing a life during the fight (no cheats)",
     id = 383158, badge = "431749", published = "12/24/2023 7:31:59 PM", modified = "12/24/2023 7:31:59 PM",
     trigger = BeatFloorBossWithoutLosingALife(0x3F, GRAPE_HEALTH)
@@ -485,7 +485,7 @@ achievement(
 )
 
 achievement(
-    title = "So Many Monkey", points = 5,
+    title = "So Many Monkeys", points = 5,
     description = "Accumulate a total of 5 lives (no cheats)",
     id = 383234, badge = "431891", published = "12/26/2023 3:45:47 AM", modified = "12/26/2023 3:45:47 AM",
     trigger = InGame() && NotUsingInvincibilityCheat() && prev(Lives()) == 0x04 && Lives() == 0x05
