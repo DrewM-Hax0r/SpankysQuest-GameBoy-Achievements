@@ -305,105 +305,105 @@ function AcedTower(floorStart, floorEnd) => ResetIfUsingInvincibilityCheat() &&
 
 achievement(
     title = "Tower 1 Clear", points = 3,
-    description = "Start from stage 1-01 and sequentially clear all 15 stages and the boss fight of Tower 1 (no cheats)",
+    description = "Start from stage 1-01 and sequentially clear all 15 stages and the boss fight of Tower 1",
     id = 382207, badge = "431738", published = "12/20/2023 2:17:20 AM", modified = "12/20/2023 2:17:20 AM",
     trigger = ClearedTower(0x00, 0x0F, TOWER_1_INDEX)
 )
 
 achievement(
     title = "Tower 2 Clear", points = 3,
-    description = "Start from stage 2-01 and sequentially clear all 15 stages and the boss fight of Tower 2 (no cheats)",
+    description = "Start from stage 2-01 and sequentially clear all 15 stages and the boss fight of Tower 2",
     id = 383097, badge = "431739", published = "12/24/2023 4:43:42 AM", modified = "12/24/2023 4:43:42 AM",
     trigger = ClearedTower(0x10, 0x1F, TOWER_2_INDEX)
 )
 
 achievement(
     title = "Tower 3 Clear", points = 3,
-    description = "Start from stage 3-01 and sequentially clear all 15 stages and the boss fight of Tower 3 (no cheats)",
+    description = "Start from stage 3-01 and sequentially clear all 15 stages and the boss fight of Tower 3",
     id = 383098, badge = "431740", published = "12/24/2023 4:44:10 AM", modified = "12/24/2023 4:44:10 AM",
     trigger = ClearedTower(0x20, 0x2F, TOWER_3_INDEX)
 )
 
 achievement(
     title = "Tower 4 Clear", points = 3,
-    description = "Start from stage 4-01 and sequentially clear all 15 stages and the boss fight of Tower 4 (no cheats)",
+    description = "Start from stage 4-01 and sequentially clear all 15 stages and the boss fight of Tower 4",
     id = 383099, badge = "431741", published = "12/24/2023 4:44:22 AM", modified = "12/24/2023 4:44:22 AM",
     trigger = ClearedTower(0x30, 0x3F, TOWER_4_INDEX)
 )
 
 achievement(
     title = "Morticia Appears", points = 5,
-    description = "Reveal the crow's true identity (no cheats)",
+    description = "Reveal the crow's true identity",
     id = 384921, badge = "433786",
     trigger = InGame() && NotUsingInvincibilityCheat() && CurrentFloorNumber() == 0x44 && prev(BossHealth()) > 0x00 && BossHealth() == 0x00
 )
 
 achievement(
     title = "Savior of Mopoland", points = 25,
-    description = "Start from stage 5-01 and sequentially clear all 5 stages of Tower 5 (no cheats)",
+    description = "Start from stage 5-01 and sequentially clear all 5 stages of Tower 5",
     id = 383100, badge = "431742", published = "12/24/2023 4:44:32 AM", modified = "12/24/2023 4:44:32 AM",
     trigger = ResetIfUsingInvincibilityCheat() && ResetIfLeftCurrentGameSession() && PlayedFloorsInSequence(0x40, 0x44) && WentToCredits()
 )
 
 achievement(
     title = "Tower 1 Stage Master", points = 10,
-    description = "Start from stage 1-01 and sequentially clear 15 stages of Tower 1 without losing a life (no cheats)",
+    description = "Start from stage 1-01 and sequentially clear 15 stages of Tower 1 without losing a life",
     id = 384106, badge = "432825",
     trigger = AcedTower(0x00, 0x0E)
 )
 
 achievement(
     title = "Sluggo the Pineapple Pulverized", points = 5,
-    description = "Defeat Sluggo The Pineapple in Tower 1 without losing a life during the fight (no cheats)",
+    description = "Defeat Sluggo The Pineapple in Tower 1 without losing a life during the fight",
     id = 380916, badge = "431746", published = "12/17/2023 1:43:07 AM", modified = "12/17/2023 1:43:07 AM",
     trigger = BeatFloorBossWithoutLosingALife(0x0F, PINEAPPLE_HEALTH)
 )
 
 achievement(
     title = "Tower 2 Stage Master", points = 10,
-    description = "Start from stage 2-01 and sequentially clear 15 stages of Tower 2 without losing a life (no cheats)",
+    description = "Start from stage 2-01 and sequentially clear 15 stages of Tower 2 without losing a life",
     id = 384107, badge = "432826",
     trigger = AcedTower(0x10, 0x1E)
 )
 
 achievement(
     title = "Pippi the Peach Pinched", points = 5,
-    description = "Defeat Pippi The Peach in Tower 2 without losing a life during the fight (no cheats)",
+    description = "Defeat Pippi The Peach in Tower 2 without losing a life during the fight",
     id = 383156, badge = "431747", published = "12/24/2023 6:53:58 PM", modified = "12/24/2023 6:53:58 PM",
     trigger = BeatFloorBossWithoutLosingALife(0x1F, PEACH_HEALTH)
 )
 
 achievement(
     title = "Tower 3 Stage Master", points = 10,
-    description = "Start from stage 3-01 and sequentially clear 15 stages of Tower 3 without losing a life (no cheats)",
+    description = "Start from stage 3-01 and sequentially clear 15 stages of Tower 3 without losing a life",
     id = 384108, badge = "432827",
     trigger = AcedTower(0x20, 0x2E)
 )
 
 achievement(
     title = "Fatso the Watermelon Wiped Out", points = 5,
-    description = "Defeat Fatso The Watermelon in Tower 3 without losing a life during the fight (no cheats)",
+    description = "Defeat Fatso The Watermelon in Tower 3 without losing a life during the fight",
     id = 383157, badge = "431748", published = "12/24/2023 7:17:05 PM", modified = "12/24/2023 7:17:05 PM",
     trigger = BeatFloorBossWithoutLosingALife(0x2F, WATERMELON_HEALTH)
 )
 
 achievement(
     title = "Tower 4 Aced", points = 10,
-    description = "Start from stage 4-01 and sequentially clear 15 stages of Tower 4 without losing a life (no cheats)",
+    description = "Start from stage 4-01 and sequentially clear 15 stages of Tower 4 without losing a life",
     id = 384109, badge = "432828",
     trigger = AcedTower(0x30, 0x3E)
 )
 
 achievement(
     title = "Vito Mascutone the Grapes Got Grinded", points = 5,
-    description = "Defeat Vito Mascutone in Tower 4 without losing a life during the fight (no cheats)",
+    description = "Defeat Vito Mascutone in Tower 4 without losing a life during the fight",
     id = 383158, badge = "431749", published = "12/24/2023 7:31:59 PM", modified = "12/24/2023 7:31:59 PM",
     trigger = BeatFloorBossWithoutLosingALife(0x3F, GRAPE_HEALTH)
 )
 
 achievement(
     title = "Ultimate Boss Rush", points = 25,
-    description = "Start from stage 5-01 and sequentially clear all 5 stages of Tower 5 without losing a life (no cheats)",
+    description = "Start from stage 5-01 and sequentially clear all 5 stages of Tower 5 without losing a life",
     id = 383159, badge = "431750", published = "12/24/2023 7:53:40 PM", modified = "12/24/2023 7:53:40 PM",
     trigger = ResetIfUsingInvincibilityCheat() && ResetIfLeftCurrentGameSession() && ResetIfLifeLost() && once(CurrentFloorNumber() == 0x40) &&
               trigger_when(once(CurrentFloorNumber() == 0x44) &&
@@ -412,7 +412,7 @@ achievement(
 
 achievement(
     title = "Attack Aficionado", points = 3,
-    description = "In a single stage, execute all 4 different types of basic attacks (no cheats)",
+    description = "In a single stage, execute all 4 different types of basic attacks",
     id = 383232, badge = "431889", published = "12/26/2023 3:33:13 AM", modified = "12/26/2023 3:33:13 AM",
     trigger = InGame() && ResetIfUsingInvincibilityCheat() && ResetIfFloorChanged() &&
               once(AttackExecutedOnThisFrame() && CurrentBubbleSize() >= 0x01 && CurrentBubbleSize() <= 0x02) &&
@@ -423,7 +423,7 @@ achievement(
 
 achievement(
     title = "Efficient Execution", points = 5,
-    description = "Defeat at least 6 enemies with a single attack (no cheats, excludes use of attack power-up item)",
+    description = "Defeat at least 6 enemies with a single attack (excludes use of attack power-up item)",
     id = 384101, badge = "432821",
     trigger = ResetIfUsingInvincibilityCheat() && ResetIfNotInGame() && never(HasAttackPowerUp()) && never(AttackExecutedFlag() == 0x00) && never(CurrentSpankyLetters() == ALL_SPANKY_LETTERS) &&
               tally(6, EnemiesDefeatedInThisFrame())
@@ -431,21 +431,21 @@ achievement(
 
 achievement(
     title = "Close Call", points = 10,
-    description = "Clear a stage while being chased by the crow (no cheats)",
+    description = "Clear a stage while being chased by the crow",
     id = 383231, badge = "431888", published = "12/26/2023 3:29:54 AM", modified = "12/26/2023 3:29:54 AM",
     trigger = InGame() && NotUsingInvincibilityCheat() && CrowTimer() == CROW_FLAG && trigger_when(ClearedFloorOnThisFrame())
 )
 
 achievement(
     title = "SPANKY", points = 5,
-    description = "Collect the letters needed to spell SPANKY (or MONKEY) and enter the Bonus Stage (no cheats)",
+    description = "Collect the letters needed to spell SPANKY (or MONKEY) and enter the Bonus Stage",
     id = 379666, badge = "431745", published = "12/12/2023 12:03:14 AM", modified = "12/12/2023 12:03:14 AM",
     trigger = NotUsingInvincibilityCheat() && prev(CurrentFloorNumber()) == 0x45 && prev(EnterBonusStageFlag()) == 0x01 && EnterBonusStageFlag() == 0x00
 )
 
 achievement(
     title = "Super 1-UP Bonus", points = 10,
-    description = "Collect the letters needed to spell SPANKY (or MONKEY) in order and recieve the Super 1-UP Bonus (no cheats)",
+    description = "Collect the letters needed to spell SPANKY (or MONKEY) in order and recieve the Super 1-UP Bonus",
     id = 384905, badge = "433769",
     trigger = InGame() && ResetIfUsingInvincibilityCheat() && never(CurrentSpankyLetters() == 0x00) &&
               CollectedSpankyLettersInOrder(0x00, SPANKY_LETTERS_S) &&
@@ -458,42 +458,42 @@ achievement(
 
 achievement(
     title = "Perfect Bonus", points = 5,
-    description = "Pop the bubble in the Bonus Stage by hitting it 8 times (no cheats)",
+    description = "Pop the bubble in the Bonus Stage by hitting it 8 times",
     id = 383233, badge = "431890", published = "12/26/2023 3:43:20 AM", modified = "12/26/2023 3:43:20 AM",
     trigger = InBonusStage() && NotUsingInvincibilityCheat() && trigger_when(prev(BonusBubbleCounter()) == 0x07 && BonusBubbleCounter() == 0x08)
 )
 
 achievement(
     title = "Bonus Points Galore", points = 5,
-    description = "Collect 30 bonus point items in a single game before losing all lives or clearing the final tower (no cheats, excludes Bonus Stage and Boss item drops)",
+    description = "Collect 30 bonus point items in a single game before losing all lives or clearing the final tower (excludes Bonus Stage and Boss item drops)",
     id = 384922, badge = "433788",
     trigger = ResetIfUsingInvincibilityCheat() && never(ScreenID() == SCREEN_ID_GAME_OVER) && measured(tally(30, PickedUpItemInThisFrame(ENTITY_TYPE_ITEM_BONUS_POINTS)), Lives() > 0)
 )
 
 achievement(
     title = "Power-Up Pills", points = 3,
-    description = "Collect an attack power-up (no cheats)",
+    description = "Collect an attack power-up",
     id = 384846, badge = "433757",
     trigger = InGame() && ResetIfUsingInvincibilityCheat() && tally(1, PickedUpItemInThisFrame(ENTITY_TYPE_ITEM_POWER_UP))
 )
 
 achievement(
     title = "1-UP Monkey", points = 3,
-    description = "Collect an extra life item (no cheats)",
+    description = "Collect an extra life item",
     id = 384857, badge = "433768",
     trigger = InGame() && ResetIfUsingInvincibilityCheat() && tally(1, PickedUpItemInThisFrame(ENTITY_TYPE_ITEM_EXTRA_LIFE))
 )
 
 achievement(
     title = "So Many Monkeys", points = 5,
-    description = "Accumulate a total of 5 lives (no cheats)",
+    description = "Accumulate a total of 5 lives",
     id = 383234, badge = "431891", published = "12/26/2023 3:45:47 AM", modified = "12/26/2023 3:45:47 AM",
     trigger = InGame() && NotUsingInvincibilityCheat() && prev(Lives()) == 0x04 && Lives() == 0x05
 )
 
 achievement(
     title = "Monkey in Training", points = 5,
-    description = "Score over 50,000 points in a single game before losing all lives or clearing the final tower (no cheats)",
+    description = "Score over 50,000 points in a single game before losing all lives or clearing the final tower",
     id = 384843, badge = "433754",
     trigger = SurpassedScore(50000)
     
@@ -501,14 +501,14 @@ achievement(
 
 achievement(
     title = "Monkey of Mastery", points = 10,
-    description = "Score over 200,000 points in a single game before losing all lives or clearing the final tower (no cheats)",
+    description = "Score over 200,000 points in a single game before losing all lives or clearing the final tower",
     id = 384844, badge = "433755",
     trigger = SurpassedScore(200000)
 )
 
 achievement(
     title = "Monkey of Legend", points = 25,
-    description = "Score over 400,000 points in a single game before losing all lives or clearing the final tower (no cheats)",
+    description = "Score over 400,000 points in a single game before losing all lives or clearing the final tower",
     id = 384845, badge = "433756",
     trigger = SurpassedScore(400000)
 )
