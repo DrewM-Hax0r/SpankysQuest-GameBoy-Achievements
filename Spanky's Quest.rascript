@@ -521,7 +521,7 @@ achievement(
 )
 
 achievement(
-    title = "8-Bit Beats", points = 1,
+    title = "8-Bit Beats", points = 0,
     description = "Enter the Sound Test password",
     id = 383236, badge = "431893", published = "12/26/2023 4:09:00 AM", modified = "12/26/2023 4:09:00 AM",
     trigger = prev(ScreenID()) == SCREEN_ID_MAIN_MENU && ScreenID() == SCREEN_ID_SOUND_TEST
