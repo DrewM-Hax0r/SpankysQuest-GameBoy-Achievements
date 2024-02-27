@@ -78,11 +78,9 @@ function CurrentSpankyLetters() => byte(0x00C0BA)
 //        Resets to 0x00 each time a life is lost.
 function EnemyKillCounter() => byte(0x00C0BE)
 
-// $C0D5: [8-bit] Least 2 significant digits of current player score (BCD Value)
-function ScoreLeastSignificantBits() => byte(0x00C0D5)
-
-// $C0D6: [16-bit] Most significant 4 digits of current player score (BCD Value)
-function ScoreMostSignificantBits() => word(0x00C0D6)
+// $C0D5: [24-bit] Current Player Score (BCD Value)
+//        Excludes the right-most digit since there is no way to score less than 10 points at a time in the game, the right-most digit is always 0.
+function CurrentPlayerScore() => tbyte(0x00C0D5)
 
 // $C180: [8-bit] Stun Bubble Flag
 //        0x00 = No Stun Bubble In Game
@@ -210,7 +208,7 @@ ENTITY_TYPE_ITEM_SPANKY_LETTER = 0x0C
 // --- Logic Functions ---
 // -----------------------
 
-function GetCurrentScore() => (bcd(ScoreMostSignificantBits()) * 1000) + (bcd(ScoreLeastSignificantBits()) * 10)
+function GetCurrentScore() => (bcd(CurrentPlayerScore()) * 10)
 
 function InPostGameSessionTransition() => SubScreenID() == 0x0A || SubScreenID() == 0x0B || SubScreenID() == 0x05 || SubScreenID() == 0x06
 
