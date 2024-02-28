@@ -265,7 +265,7 @@ function PickedUpItemInThisFrame(itemType) {
     return result
 }
 
-function CollectedSpankyLettersInOrder(priorLetters, currentLetters) => once(prior(CurrentSpankyLetters()) == priorLetters && CurrentSpankyLetters() == currentLetters)
+function CollectedSpankyLettersInOrder(priorLetters, currentLetters) => once(prev(CurrentSpankyLetters()) == priorLetters && CurrentSpankyLetters() == currentLetters)
 
 function BeatFloorBossWithoutLosingALife(floorNumber) => ResetIfUsingInvincibilityCheat() &&
                                                          ResetIfLifeLost() &&
