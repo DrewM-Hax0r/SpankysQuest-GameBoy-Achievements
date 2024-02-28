@@ -221,7 +221,7 @@ function NotUsingInvincibilityCheat() => InvincibilityCheatFlag() == 0x00
 
 function InBonusStage() => InGame() && prior(CurrentFloorNumber()) == 0x45
 
-function SurpassedScore(score) => InGame() && ResetIfUsingInvincibilityCheat() && never(ScreenID() == SCREEN_ID_GAME_OVER) && once(GetCurrentScore() == 0) && GetCurrentScore() > score
+function SurpassedScore(score) => InGame() && ResetIfUsingInvincibilityCheat() && prev(GetCurrentScore()) <= score && GetCurrentScore() > score
 
 function HasAttackPowerUp() => AttackPowerUpCounter() > 0x00
 
