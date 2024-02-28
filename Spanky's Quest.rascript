@@ -17,7 +17,7 @@ function ScreenID() => byte(0x00C003)
 //        0x02 = Title Screen
 //        0x03 = Scoreboard when viewed from Title Screen
 //        0x04 = Transition from Title Screen to Tower Select
-//        0x07 = Tower Select
+//        0x07 = Tower Select, or starting a stage if in game
 //        0x0a - 0x0b and 0x05 - 0x06 = Transition from game to Tower Select
 //        0x0e = When in game, represents the current level having just been cleared
 function SubScreenID() => byte(0x00C004)
@@ -165,14 +165,10 @@ SCREEN_ID_SOUND_TEST = 0x06
 SCREEN_ID_STAGE_SELECT = 0x07
 SCREEN_ID_IN_GAME = 0x08
 SCREEN_ID_GAME_OVER = 0x0C
-SCREEN_ID_CREDITS = 0x0D
 
+SUB_SCREEN_ID_FLOOR_START = 0x07
+SUB_SCREEN_ID_FLOOR_ACTIVE = 0x0A
 SUB_SCREEN_ID_FLOOR_CLEARED = 0x0E
-
-TOWER_1_INDEX = 0
-TOWER_2_INDEX = 1
-TOWER_3_INDEX = 2
-TOWER_4_INDEX = 3
 
 SPANKY_LETTERS_S = 0x80
 SPANKY_LETTERS_SP = 0xC0
@@ -182,11 +178,6 @@ SPANKY_LETTERS_SPANK = 0xF8
 ALL_SPANKY_LETTERS = 0xFC
 
 CROW_FLAG = 0xFF
-
-PINEAPPLE_HEALTH = 0x10
-PEACH_HEALTH = 0x18
-WATERMELON_HEALTH = 0x14
-GRAPE_HEALTH = 0x18
 
 ENTITY_MEMORY_SIZE = 0x20
 ALL_ENTITY_SLOTS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
@@ -224,6 +215,8 @@ function ResetIfLifeLost() => never(prev(Lives()) > Lives())
 
 function InGame() => ScreenID() == SCREEN_ID_IN_GAME
 
+function StartingStage() => InGame() && SubScreenID() == SUB_SCREEN_ID_FLOOR_START
+
 function NotUsingInvincibilityCheat() => InvincibilityCheatFlag() == 0x00
 
 function InBonusStage() => InGame() && prior(CurrentFloorNumber()) == 0x45
@@ -234,7 +227,7 @@ function HasAttackPowerUp() => AttackPowerUpCounter() > 0x00
 
 function AttackExecutedOnThisFrame() => prev(AttackExecutedFlag()) == 0x00 && AttackExecutedFlag() == 0x01
 
-function ClearedFloorOnThisFrame() => prev(SubScreenID()) != SUB_SCREEN_ID_FLOOR_CLEARED && SubScreenID() == SUB_SCREEN_ID_FLOOR_CLEARED
+function ClearedFloorOnThisFrame() => prev(SubScreenID()) == SUB_SCREEN_ID_FLOOR_ACTIVE && SubScreenID() == SUB_SCREEN_ID_FLOOR_CLEARED
                                                            
 function EntityAddress(slot) => FirstEntityActiveFlagAddress() + (ENTITY_MEMORY_SIZE * slot)
 
@@ -273,28 +266,23 @@ function PickedUpItemInThisFrame(itemType) {
 }
 
 function CollectedSpankyLettersInOrder(priorLetters, currentLetters) => once(prior(CurrentSpankyLetters()) == priorLetters && CurrentSpankyLetters() == currentLetters)
-                                                           
-function WentToCredits() => prev(ScreenID()) == SCREEN_ID_IN_GAME && ScreenID() == SCREEN_ID_CREDITS
 
-function BeatFloorBossWithoutLosingALife(floorNumber, bossHealth) => ResetIfUsingInvincibilityCheat() &&
-                                                                     CurrentFloorNumber() == floorNumber && ResetIfLifeLost() &&
-                                                                     once(prev(BossHealth()) == 0x00 && BossHealth() == bossHealth) &&
-                                                                     trigger_when(BossHealth() == 0x00)
+function BeatFloorBossWithoutLosingALife(floorNumber) => ResetIfUsingInvincibilityCheat() &&
+                                                         ResetIfLifeLost() &&
+                                                         once(StartingStage() && CurrentFloorNumber() == floorNumber) &&
+                                                         trigger_when(ClearedFloorOnThisFrame())
                                                          
-function PlayedFloorsInSequence(floorStart, floorEnd) => once(CurrentFloorNumber() == floorStart) && once(CurrentFloorNumber() == floorEnd)
+function CompletedFloorsInSequence(floorStart, floorEnd) => once(StartingStage() && CurrentFloorNumber() == floorStart) &&
+                                                            CurrentFloorNumber() == floorEnd &&
+                                                            trigger_when(ClearedFloorOnThisFrame())
 
-function ClearedTower(floorStart, floorEnd, towerIndex) => ResetIfUsingInvincibilityCheat() &&
-                                                           ResetIfLeftCurrentGameSession() &&
-                                                           PlayedFloorsInSequence(floorStart, floorEnd) &&
-                                                           prev(TowerClearFlag(towerIndex)) == 0 && TowerClearFlag(towerIndex) == 1
+function ClearedTower(floorStart, floorEnd) => ResetIfUsingInvincibilityCheat() &&
+                                               ResetIfLeftCurrentGameSession() &&
+                                               CompletedFloorsInSequence(floorStart, floorEnd)
                                                            
-function AcedTower(floorStart, floorEnd) => ResetIfUsingInvincibilityCheat() &&
-                                            ResetIfLeftCurrentGameSession() &&
-                                            ResetIfLifeLost() &&
-                                            once(CurrentFloorNumber() == floorStart) &&
-                                            trigger_when(once(CurrentFloorNumber() == floorEnd) &&
-                                                         prev(CurrentFloorNumber()) == floorEnd &&
-                                                         CurrentFloorNumber() == floorEnd + 1)
+function AcedTower(floorStart, floorEnd) => ResetIfLifeLost() &&
+                                            ClearedTower(floorStart, floorEnd)
+
 
 
 // ----------------------
@@ -305,28 +293,28 @@ achievement(
     title = "Tower 1 Clear", points = 3,
     description = "Start from stage 1-01 and sequentially clear all 15 stages and the boss fight of Tower 1",
     id = 382207, badge = "431738", published = "12/20/2023 2:17:20 AM", modified = "12/20/2023 2:17:20 AM",
-    trigger = ClearedTower(0x00, 0x0F, TOWER_1_INDEX)
+    trigger = ClearedTower(0x00, 0x0F)
 )
 
 achievement(
     title = "Tower 2 Clear", points = 3,
     description = "Start from stage 2-01 and sequentially clear all 15 stages and the boss fight of Tower 2",
     id = 383097, badge = "431739", published = "12/24/2023 4:43:42 AM", modified = "12/24/2023 4:43:42 AM",
-    trigger = ClearedTower(0x10, 0x1F, TOWER_2_INDEX)
+    trigger = ClearedTower(0x10, 0x1F)
 )
 
 achievement(
     title = "Tower 3 Clear", points = 3,
     description = "Start from stage 3-01 and sequentially clear all 15 stages and the boss fight of Tower 3",
     id = 383098, badge = "431740", published = "12/24/2023 4:44:10 AM", modified = "12/24/2023 4:44:10 AM",
-    trigger = ClearedTower(0x20, 0x2F, TOWER_3_INDEX)
+    trigger = ClearedTower(0x20, 0x2F)
 )
 
 achievement(
     title = "Tower 4 Clear", points = 3,
     description = "Start from stage 4-01 and sequentially clear all 15 stages and the boss fight of Tower 4",
     id = 383099, badge = "431741", published = "12/24/2023 4:44:22 AM", modified = "12/24/2023 4:44:22 AM",
-    trigger = ClearedTower(0x30, 0x3F, TOWER_4_INDEX)
+    trigger = ClearedTower(0x30, 0x3F)
 )
 
 achievement(
@@ -340,63 +328,63 @@ achievement(
     title = "Savior of Mopoland", points = 25,
     description = "Start from stage 5-01 and sequentially clear all 5 stages of Tower 5",
     id = 383100, badge = "431742", published = "12/24/2023 4:44:32 AM", modified = "12/24/2023 4:44:32 AM",
-    trigger = ResetIfUsingInvincibilityCheat() && ResetIfLeftCurrentGameSession() && PlayedFloorsInSequence(0x40, 0x44) && WentToCredits()
+    trigger = ResetIfUsingInvincibilityCheat() && ResetIfLeftCurrentGameSession() && CompletedFloorsInSequence(0x40, 0x44)
 )
 
 achievement(
     title = "Tower 1 Stage Master", points = 10,
     description = "Start from stage 1-01 and sequentially clear 15 stages of Tower 1 without losing a life",
     id = 384106, badge = "432825",
-    trigger = AcedTower(0x00, 0x0E)
+    trigger = AcedTower(0x00, 0x0F)
 )
 
 achievement(
     title = "Sluggo the Pineapple Pulverized", points = 5,
     description = "Defeat Sluggo The Pineapple in Tower 1 without losing a life during the fight",
     id = 380916, badge = "431746", published = "12/17/2023 1:43:07 AM", modified = "12/17/2023 1:43:07 AM",
-    trigger = BeatFloorBossWithoutLosingALife(0x0F, PINEAPPLE_HEALTH)
+    trigger = BeatFloorBossWithoutLosingALife(0x0F)
 )
 
 achievement(
     title = "Tower 2 Stage Master", points = 10,
     description = "Start from stage 2-01 and sequentially clear 15 stages of Tower 2 without losing a life",
     id = 384107, badge = "432826",
-    trigger = AcedTower(0x10, 0x1E)
+    trigger = AcedTower(0x10, 0x1F)
 )
 
 achievement(
     title = "Pippi the Peach Pinched", points = 5,
     description = "Defeat Pippi The Peach in Tower 2 without losing a life during the fight",
     id = 383156, badge = "431747", published = "12/24/2023 6:53:58 PM", modified = "12/24/2023 6:53:58 PM",
-    trigger = BeatFloorBossWithoutLosingALife(0x1F, PEACH_HEALTH)
+    trigger = BeatFloorBossWithoutLosingALife(0x1F)
 )
 
 achievement(
     title = "Tower 3 Stage Master", points = 10,
     description = "Start from stage 3-01 and sequentially clear 15 stages of Tower 3 without losing a life",
     id = 384108, badge = "432827",
-    trigger = AcedTower(0x20, 0x2E)
+    trigger = AcedTower(0x20, 0x2F)
 )
 
 achievement(
     title = "Fatso the Watermelon Wiped Out", points = 5,
     description = "Defeat Fatso The Watermelon in Tower 3 without losing a life during the fight",
     id = 383157, badge = "431748", published = "12/24/2023 7:17:05 PM", modified = "12/24/2023 7:17:05 PM",
-    trigger = BeatFloorBossWithoutLosingALife(0x2F, WATERMELON_HEALTH)
+    trigger = BeatFloorBossWithoutLosingALife(0x2F)
 )
 
 achievement(
     title = "Tower 4 Aced", points = 10,
     description = "Start from stage 4-01 and sequentially clear 15 stages of Tower 4 without losing a life",
     id = 384109, badge = "432828",
-    trigger = AcedTower(0x30, 0x3E)
+    trigger = AcedTower(0x30, 0x3F)
 )
 
 achievement(
     title = "Vito Mascutone the Grapes Got Grinded", points = 5,
     description = "Defeat Vito Mascutone in Tower 4 without losing a life during the fight",
     id = 383158, badge = "431749", published = "12/24/2023 7:31:59 PM", modified = "12/24/2023 7:31:59 PM",
-    trigger = BeatFloorBossWithoutLosingALife(0x3F, GRAPE_HEALTH)
+    trigger = BeatFloorBossWithoutLosingALife(0x3F)
 )
 
 achievement(
@@ -404,8 +392,7 @@ achievement(
     description = "Start from stage 5-01 and sequentially clear all 5 stages of Tower 5 without losing a life",
     id = 383159, badge = "431750", published = "12/24/2023 7:53:40 PM", modified = "12/24/2023 7:53:40 PM",
     trigger = ResetIfUsingInvincibilityCheat() && ResetIfLeftCurrentGameSession() && ResetIfLifeLost() && once(CurrentFloorNumber() == 0x40) &&
-              trigger_when(once(CurrentFloorNumber() == 0x44) &&
-                           WentToCredits())
+              trigger_when(CurrentFloorNumber() == 0x44 && ClearedFloorOnThisFrame())
 )
 
 achievement(
