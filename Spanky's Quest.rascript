@@ -499,7 +499,7 @@ achievement(
 )
 
 achievement(
-    title = "Anywhere Anytime", points = 1,
+    title = "Anywhere Anytime", points = 0,
     description = "Enter the Stage Select password",
     id = 383235, badge = "431892", published = "12/26/2023 3:56:14 AM", modified = "12/26/2023 3:56:14 AM",
     trigger = prev(ScreenID()) == SCREEN_ID_MAIN_MENU && ScreenID() == SCREEN_ID_STAGE_SELECT
