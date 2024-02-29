@@ -124,6 +124,7 @@ function FirstEntityActiveFlagAddress() => 0x00C280
 // $C281: [8-bit] Entity Type
 //        This can identify anything from the type of enemy to the type of item it is that is occupying this span of memory
 //        0x09 = Bonus Points
+//        0x25 = Morticia (Final Boss)
 //        0x0A = Extra Life
 //        0x0B = Attack Power Up
 //        0x0C = SPANKY Letter
@@ -135,7 +136,7 @@ function FirstEntityTypeAddress() => 0x00C281
 //        Attack Power Up = 0x00 to 0x01 when picked up
 //        Extra Life = 0x00 to 0x01 when picked up
 //        SPANKY Letter = 0x01 to 0x02 when picked up
-function FirstEntityTypeAddress() => 0x00C282
+function PickUpFlagAddress() => 0x00C282
 
 // $C28E: [8-bit] Boss Health
 function BossHealth() => byte(0x00C28E)
@@ -165,6 +166,7 @@ SCREEN_ID_SOUND_TEST = 0x06
 SCREEN_ID_STAGE_SELECT = 0x07
 SCREEN_ID_IN_GAME = 0x08
 SCREEN_ID_GAME_OVER = 0x0C
+SCREEN_ID_CREDITS = 0x0D
 
 SUB_SCREEN_ID_FLOOR_START = 0x07
 SUB_SCREEN_ID_FLOOR_ACTIVE = 0x0A
@@ -267,6 +269,8 @@ function PickedUpItemInThisFrame(itemType) {
 
 function CollectedSpankyLettersInOrder(priorLetters, currentLetters) => once(prev(CurrentSpankyLetters()) == priorLetters && CurrentSpankyLetters() == currentLetters)
 
+function WentToCredits() => prev(ScreenID()) != SCREEN_ID_CREDITS && ScreenID() == SCREEN_ID_CREDITS
+
 function BeatFloorBossWithoutLosingALife(floorNumber) => ResetIfUsingInvincibilityCheat() &&
                                                          ResetIfLifeLost() &&
                                                          once(StartingStage() && CurrentFloorNumber() == floorNumber) &&
@@ -275,6 +279,10 @@ function BeatFloorBossWithoutLosingALife(floorNumber) => ResetIfUsingInvincibili
 function CompletedFloorsInSequence(floorStart, floorEnd) => once(StartingStage() && CurrentFloorNumber() == floorStart) &&
                                                             CurrentFloorNumber() == floorEnd &&
                                                             trigger_when(ClearedFloorOnThisFrame())
+                                                            
+function CompletedTower5FloorsInSequence() => once(StartingStage() && CurrentFloorNumber() == 0x40) &&
+                                              CurrentFloorNumber() == 0x44 &&
+                                              trigger_when(WentToCredits())                                               
 
 function ClearedTower(floorStart, floorEnd) => ResetIfUsingInvincibilityCheat() &&
                                                ResetIfLeftCurrentGameSession() &&
@@ -282,6 +290,11 @@ function ClearedTower(floorStart, floorEnd) => ResetIfUsingInvincibilityCheat() 
                                                            
 function AcedTower(floorStart, floorEnd) => ResetIfLifeLost() &&
                                             ClearedTower(floorStart, floorEnd)
+
+// Converts provided number of seconds to frame time (60fps)
+function Seconds(seconds) => seconds * 60
+
+function ResetIfTimeAfterStartingStageExceeds(frameTime, floorStart, floorEnd) => never(repeated(frameTime, InGame() && ((CurrentFloorNumber() >= floorStart && CurrentFloorNumber() <= floorEnd) || CurrentFloorNumber() == 0x45)))
 
 
 
@@ -321,14 +334,14 @@ achievement(
     title = "Morticia Appears", points = 5,
     description = "Reveal the crow's true identity",
     id = 384921, badge = "433786",
-    trigger = InGame() && NotUsingInvincibilityCheat() && CurrentFloorNumber() == 0x44 && prev(BossHealth()) > 0x00 && BossHealth() == 0x00
+    trigger = InGame() && NotUsingInvincibilityCheat() && CurrentFloorNumber() == 0x44 && prev(BossHealth()) == 0x01 && BossHealth() == 0x00
 )
 
 achievement(
     title = "Savior of Mopoland", points = 25,
     description = "Start from stage 5-01 and sequentially clear all 5 stages of Tower 5",
     id = 383100, badge = "431742", published = "12/24/2023 4:44:32 AM", modified = "12/24/2023 4:44:32 AM",
-    trigger = ResetIfUsingInvincibilityCheat() && ResetIfLeftCurrentGameSession() && CompletedFloorsInSequence(0x40, 0x44)
+    trigger = ResetIfUsingInvincibilityCheat() && ResetIfLeftCurrentGameSession() && CompletedTower5FloorsInSequence()
 )
 
 achievement(
@@ -391,8 +404,9 @@ achievement(
     title = "Ultimate Boss Rush", points = 25,
     description = "Start from stage 5-01 and sequentially clear all 5 stages of Tower 5 without losing a life",
     id = 383159, badge = "431750", published = "12/24/2023 7:53:40 PM", modified = "12/24/2023 7:53:40 PM",
-    trigger = ResetIfUsingInvincibilityCheat() && ResetIfLeftCurrentGameSession() && ResetIfLifeLost() && once(CurrentFloorNumber() == 0x40) &&
-              trigger_when(CurrentFloorNumber() == 0x44 && ClearedFloorOnThisFrame())
+    trigger = ResetIfUsingInvincibilityCheat() && ResetIfLeftCurrentGameSession() && ResetIfLifeLost() && once(StartingStage() && CurrentFloorNumber() == 0x40) &&
+              CurrentFloorNumber() == 0x44 &&
+              trigger_when(byte(FirstEntityTypeAddress()) == 0x25 && prev(BossHealth()) == 0x01 && BossHealth() == 0x00)
 )
 
 achievement(
@@ -517,9 +531,17 @@ achievement(
 // ---- Leaderboards ----
 // ----------------------
 
+function StartTowerSpeedrun(floorStart) => NotUsingInvincibilityCheat() && InGame() && prev(ScreenID()) != SCREEN_ID_IN_GAME && CurrentFloorNumber() == floorStart
+
+function SubmitTowerSpeedrun(floorEnd) => ClearedFloorOnThisFrame() && CurrentFloorNumber() == floorEnd
+
+function SubmitTower5Speedrun() => WentToCredits() && CurrentFloorNumber() == 0x44
+
+function TowerSpeedrunValue(floorStart) => measured(tally(0, InGame() && CurrentFloorNumber() >= floorStart))
+
 leaderboard(
     id = 85012,
-    title = "Top Score (no cheats)",
+    title = "Top Score",
     description = "Highest score achieved in a game before losing all lives or clearing the final tower",
     start = NotUsingInvincibilityCheat() && prev(ScreenID()) != SCREEN_ID_GAME_OVER && ScreenID() == SCREEN_ID_GAME_OVER,
     cancel = ScreenID() == SCREEN_ID_MAIN_MENU,
@@ -527,6 +549,61 @@ leaderboard(
     value = GetCurrentScore(),
     format="VALUE",
     lower_is_better=false
+)
+
+leaderboard(
+    title = "Tower 1 Clear Time",
+    description = "Fastest time starting from stage 1-01 and sequentially clearing all 15 stages and the boss fight of Tower 1 without getting a game over",
+    start = StartTowerSpeedrun(0x00),
+    cancel = ScreenID() == SCREEN_ID_GAME_OVER,
+    submit = SubmitTowerSpeedrun(0x0F),
+    value = TowerSpeedrunValue(0x00),
+    format="FRAMES",
+    lower_is_better=true
+)
+
+leaderboard(
+    title = "Tower 2 Clear Time",
+    description = "Fastest time starting from stage 2-01 and sequentially clearing all 15 stages and the boss fight of Tower 2 without getting a game over",
+    start = StartTowerSpeedrun(0x10),
+    cancel = ScreenID() == SCREEN_ID_GAME_OVER,
+    submit = SubmitTowerSpeedrun(0x1F),
+    value = TowerSpeedrunValue(0x10),
+    format="FRAMES",
+    lower_is_better=true
+)
+
+leaderboard(
+    title = "Tower 3 Clear Time",
+    description = "Fastest time starting from stage 3-01 and sequentially clearing all 15 stages and the boss fight of Tower 3 without getting a game over",
+    start = StartTowerSpeedrun(0x20),
+    cancel = ScreenID() == SCREEN_ID_GAME_OVER,
+    submit = SubmitTowerSpeedrun(0x2F),
+    value = TowerSpeedrunValue(0x20),
+    format="FRAMES",
+    lower_is_better=true
+)
+
+leaderboard(
+    title = "Tower 4 Clear Time",
+    description = "Fastest time starting from stage 4-01 and sequentially clearing all 15 stages and the boss fight of Tower 4 without getting a game over",
+    start = StartTowerSpeedrun(0x30),
+    cancel = ScreenID() == SCREEN_ID_GAME_OVER,
+    submit = SubmitTowerSpeedrun(0x3F),
+    value = TowerSpeedrunValue(0x30),
+    format="FRAMES",
+    lower_is_better=true
+)
+
+leaderboard(
+    title = "Tower 5 Clear Time",
+    description = "Fastest time starting from stage 5-01 and sequentially clearing all 5 stages of Tower 5 without getting a game over",
+    start = StartTowerSpeedrun(0x40),
+    cancel = ScreenID() == SCREEN_ID_GAME_OVER,
+    submit = SubmitTower5Speedrun(),
+    value = TowerSpeedrunValue(0x40),
+    format="FRAMES",
+    lower_is_better=true
 )
 
 
@@ -672,23 +749,30 @@ SPANKYLookup = {
     252: " SPANKY"
 }
 
-rich_presence_conditional_display(!InGame() && GetCurrentScore() == 0, "In Menus")
+LivesCountLookup = {
+    0x01: "life"
+}
 
-rich_presence_conditional_display(!InGame(), "In Menus • Score: {0}0 • {1} • Lives: {2}",
+rich_presence_conditional_display(!InGame() && GetCurrentScore() == 0, "In menus")
+
+rich_presence_conditional_display(!InGame(), "In menus • Score: {0}0 • {1} • {2} {3}",
     rich_presence_value("Score", GetCurrentScore() / 10, format="SCORE"),
     rich_presence_lookup("SPANKY", CurrentSpankyLetters(), SPANKYLookup, fallback=" ––––––"),
-    rich_presence_value("Number", Lives())
+    rich_presence_value("Number", Lives()),
+    rich_presence_lookup("LivesCount", Lives(), LivesCountLookup, fallback="lives")
 )
 
-rich_presence_conditional_display(prior(CurrentFloorNumber()) == 0x45, "Bonus Stage • Score: {0}0 • {1} • Lives: {2}",
+rich_presence_conditional_display(prior(CurrentFloorNumber()) == 0x45, "Bonus Stage • Score: {0}0 • {1} • {2} {3}",
     rich_presence_value("Score", GetCurrentScore() / 10, format="SCORE"),
     rich_presence_lookup("SPANKY", CurrentSpankyLetters(), SPANKYLookup, fallback=" ––––––"),
-    rich_presence_value("Number", Lives())
+    rich_presence_value("Number", Lives()),
+    rich_presence_lookup("LivesCount", Lives(), LivesCountLookup, fallback="lives")
 )
 
-rich_presence_display("Tower {0} • Score: {1}0 • {2} • Lives:{3}",
+rich_presence_display("Tower {0} • Score: {1}0 • {2} • {3} {4}",
     rich_presence_lookup("Floor", CurrentFloorNumber(), FloorLookup, fallback="?-??"),
     rich_presence_value("Score", GetCurrentScore() / 10, format="SCORE"),
     rich_presence_lookup("SPANKY", CurrentSpankyLetters(), SPANKYLookup, fallback=" ––––––"),
-    rich_presence_value("Number", Lives())
+    rich_presence_value("Number", Lives()),
+    rich_presence_lookup("LivesCount", Lives(), LivesCountLookup, fallback="lives")
 )
