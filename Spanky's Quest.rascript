@@ -348,7 +348,7 @@ achievement(
     title = "Tower 1 Stage Master", points = 10,
     description = "Start from stage 1-01 and sequentially clear 15 stages of Tower 1 without losing a life",
     id = 384106, badge = "432825",
-    trigger = AcedTower(0x00, 0x0F)
+    trigger = AcedTower(0x00, 0x0E)
 )
 
 achievement(
@@ -362,7 +362,7 @@ achievement(
     title = "Tower 2 Stage Master", points = 10,
     description = "Start from stage 2-01 and sequentially clear 15 stages of Tower 2 without losing a life",
     id = 384107, badge = "432826",
-    trigger = AcedTower(0x10, 0x1F)
+    trigger = AcedTower(0x10, 0x1E)
 )
 
 achievement(
@@ -376,7 +376,7 @@ achievement(
     title = "Tower 3 Stage Master", points = 10,
     description = "Start from stage 3-01 and sequentially clear 15 stages of Tower 3 without losing a life",
     id = 384108, badge = "432827",
-    trigger = AcedTower(0x20, 0x2F)
+    trigger = AcedTower(0x20, 0x2E)
 )
 
 achievement(
@@ -387,10 +387,10 @@ achievement(
 )
 
 achievement(
-    title = "Tower 4 Aced", points = 10,
+    title = "Tower 4 Stage Master", points = 10,
     description = "Start from stage 4-01 and sequentially clear 15 stages of Tower 4 without losing a life",
     id = 384109, badge = "432828",
-    trigger = AcedTower(0x30, 0x3F)
+    trigger = AcedTower(0x30, 0x3E)
 )
 
 achievement(
